@@ -35,7 +35,7 @@ def get_data(filename: str) -> list:
 
     with open(filename, 'r') as f:
         for line in f:
-            return_list.append(tuple(line.strip().split()))
+            return_list.append(tuple(line.split()))
 
     return return_list
 
@@ -49,7 +49,7 @@ def check_passwords(passwords: list) -> tuple:
         start = int(split[0])
         end = int(split[1])
 
-        letter: str = t[1][0]
+        letter: str = t[1][:1]
         password = t[2]
 
         c = password.count(letter)
