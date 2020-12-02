@@ -1,0 +1,15 @@
+anytree
+black
+Click
+matplotlib
+numpy
+pytest
+pytest-cov
+pytest-xdist
+tox
+tqdm
+rich
+requests
+matplotlib
+scipy
+networkx
