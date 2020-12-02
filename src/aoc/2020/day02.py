@@ -57,9 +57,7 @@ def check_passwords(passwords: list) -> tuple:
             my_count1 += 1
 
         positions = password[start - 1] + password[end - 1]
-        if (positions[0] == letter or positions[1] == letter) and positions[
-            0
-        ] != positions[1]:
+        if (letter in (positions[0], positions[1])) and positions[0] != positions[1]:
             my_count2 += 1
 
     return my_count1, my_count2
@@ -67,4 +65,4 @@ def check_passwords(passwords: list) -> tuple:
 
 results = check_passwords(get_data("day02.txt"))
 print(f"There are {results[0]} passwords conforming to the first part of the Day 02 question.")
-print(f"There are {results[1]}  passwords conforming to the second part of the Day 02 question.")
+print(f"There are {results[1]} passwords conforming to the second part of the Day 02 question.")
