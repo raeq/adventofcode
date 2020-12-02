@@ -62,7 +62,7 @@ def check_passwords(passwords: list) -> tuple:
 
     return my_count1, my_count2
 
-
-results = check_passwords(get_data("day02.txt"))
-print(f"There are {results[0]} passwords conforming to the first part of the Day 02 question.")
-print(f"There are {results[1]} passwords conforming to the second part of the Day 02 question.")
+if __name__ == "__main__":
+    results = check_passwords(get_data("day02.txt"))
+    print(f"There are {results[0]} passwords conforming to the first part of the Day 02 question.")
+    print(f"There are {results[1]} passwords conforming to the second part of the Day 02 question.")
