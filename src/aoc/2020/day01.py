@@ -28,12 +28,14 @@ entries = [1728, 1954, 1850, 1825, 1732, 1536, 1759, 1877, 1400, 1579, 1708, 104
 lowest = min(entries)
 filtered_e = sorted(filterfalse(lambda x: 2020 - x < lowest, entries), reverse=True)
 
+# There is an O(n) solution here, but I prefer the readability of this code.
 for e in (p for p in combinations(filtered_e, 2) if sum(p) == 2020):
-    print(e, sum(e), prod(e))  # (215, 1805) 388075
+    print(e, sum(e), prod(e))
     break
 
 # In your expense report, what is the product of the three entries that sum to 2020?
 
+# There is an O(n^2) solution here, but I prefer the readability of this code.
 for e in (p for p in combinations(sorted(entries), 3) if sum(p) == 2020):
-    print(e, sum(e), prod(e))  # ('558', '639', '823')  293450526
+    print(e, sum(e), prod(e))
     break
