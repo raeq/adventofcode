@@ -1,14 +1,9 @@
 from collections import namedtuple as nt
 
-import math
-
 
 def load_file(file_name: str):
-    lines: list = []
-    with open(file_name) as fd:
-        for line in fd:
-            lines.append(line.strip())
-    return lines
+    with open(file_name, 'r') as fd:
+        return [line.rstrip('\n') for line in fd]
 
 
 def traverse(right_steps=3, down_steps=1):
@@ -44,9 +39,10 @@ if __name__ == "__main__":
 
     # Part 2
     print("Part 2")
+    trees_product: int = 1
     for rule in rules:
         trees: int = traverse(rule.right_steps, rule.down_steps)
-        trees_per_run.append(trees)
+        trees_product = trees_product * trees
         print(f"Run '{rule}' number of trees: {trees}")
 
-    print(f"\nProduct: {math.prod(trees_per_run)}")
+    print(f"\nProduct: {trees_product}")
