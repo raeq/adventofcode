@@ -1,12 +1,12 @@
 from collections import namedtuple as nt
 
 
-def load_file(file_name: str):
+def load_file(file_name: str) -> list:
     with open(file_name, 'r') as fd:
         return [line.rstrip('\n') for line in fd]
 
 
-def traverse(right_steps: int, down_steps: int):
+def traverse(right_steps: int, down_steps: int) -> int:
     trees_found: int = 0
     for i in range(0, height, down_steps):
         location: int = i // down_steps * right_steps % width
