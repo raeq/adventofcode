@@ -6,12 +6,12 @@ def load_file(file_name: str):
         return [line.rstrip('\n') for line in fd]
 
 
-def traverse(right_steps=3, down_steps=1):
-    trees: int = 0
+def traverse(right_steps: int, down_steps: int):
+    trees_found: int = 0
     for i in range(0, height, down_steps):
         location: int = i // down_steps * right_steps % width
-        trees += 1 if fields[i][location] == "#" else 0
-    return trees
+        trees_found += 1 if fields[i][location] == "#" else 0
+    return trees_found
 
 
 if __name__ == "__main__":
