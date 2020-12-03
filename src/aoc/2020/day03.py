@@ -12,9 +12,8 @@ def load_file(file_name: str):
 def traverse(right=3, down_step=1):
     trees = 0
     for i in range(0, length, down_step):
-        spot = fields[i][i // down_step * right % width]
-        if spot == "#":
-            trees += 1
+        location: int = i // down_step * right % width
+        trees += 1 if fields[i][location] == "#" else 0
     return trees
 
 
