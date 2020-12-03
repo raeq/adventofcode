@@ -1,4 +1,7 @@
 from collections import namedtuple as nt
+from functools import lru_cache
+
+from aoc.utils.decorator_utils import timing
 
 
 def load_file(file_name: str) -> list:
@@ -6,6 +9,7 @@ def load_file(file_name: str) -> list:
         return [line.rstrip('\n') for line in fd]
 
 
+@lru_cache()
 def traverse(right_steps: int, down_steps: int) -> int:
     trees_found: int = 0
     for i in range(0, height, down_steps):
@@ -14,7 +18,11 @@ def traverse(right_steps: int, down_steps: int) -> int:
     return trees_found
 
 
-if __name__ == "__main__":
+@timing
+def main():
+    global fields
+    global height
+    global width
 
     Rule: nt = nt('Rule', ['right_steps', 'down_steps'])
 
@@ -24,7 +32,6 @@ if __name__ == "__main__":
     print(f"Data Width: {height}")
     print(f"Data Height: {width}\n")
 
-    trees_per_run = []
     rules = [Rule(right_steps=1, down_steps=1),
              Rule(right_steps=3, down_steps=1),
              Rule(right_steps=5, down_steps=1),
@@ -46,3 +53,9 @@ if __name__ == "__main__":
         print(f"Run '{rule}' number of trees: {trees}")
 
     print(f"\nProduct: {trees_product}")
+
+
+if __name__ == "__main__":
+    # globals
+
+    main()
