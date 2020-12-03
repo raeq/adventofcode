@@ -29,7 +29,7 @@ if __name__ == "__main__":
     print(f"Data Width: {height}")
     print(f"Data Height: {width}\n")
 
-    total_trees = []
+    trees_per_run = []
     rules = [Rule(right_steps=1, down_steps=1),
              Rule(right_steps=3, down_steps=1),
              Rule(right_steps=5, down_steps=1),
@@ -37,7 +37,7 @@ if __name__ == "__main__":
              Rule(right_steps=1, down_steps=2)]
 
     for rule in rules:
-        total_trees.append(traverse(rule.right_steps, rule.down_steps))
+        trees_per_run.append(traverse(rule.right_steps, rule.down_steps))
 
-    [print(f"Run {x} number of trees: {y}") for x, y in enumerate(total_trees)]
-    print(f"\nProduct: {math.prod(total_trees)}")
+    [print(f"Run {x} number of trees: {y}") for x, y in enumerate(trees_per_run)]
+    print(f"\nProduct: {math.prod(trees_per_run)}")
