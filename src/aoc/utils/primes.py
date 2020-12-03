@@ -1,4 +1,5 @@
 import random
+import secrets
 
 import math
 
@@ -102,3 +103,18 @@ def get_primes(nmax: int):
         else:
             pass
     return primes
+
+
+def generate_large_prime(keysize=1024):
+    # Return a random prime number of keysize bits in size.
+    """
+    :param keysize:
+    :return:
+
+    """
+    secrets_generator = secrets.SystemRandom()
+
+    while True:
+        num: int = secrets_generator.randint(2 ** (keysize - 1), 2 ** (keysize))
+        if miller_rabin(num, 40):
+            return num
