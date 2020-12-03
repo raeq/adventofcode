@@ -36,8 +36,17 @@ if __name__ == "__main__":
              Rule(right_steps=7, down_steps=1),
              Rule(right_steps=1, down_steps=2)]
 
-    for rule in rules:
-        trees_per_run.append(traverse(rule.right_steps, rule.down_steps))
+    # Part 1
+    rule = rules[1]
+    trees: int = traverse(rule.right_steps, rule.down_steps)
+    print("Part 1")
+    print(f"Run '{rule}' number of trees: {trees}\n")
 
-    [print(f"Run {x} number of trees: {y}") for x, y in enumerate(trees_per_run)]
+    # Part 2
+    print("Part 2")
+    for rule in rules:
+        trees: int = traverse(rule.right_steps, rule.down_steps)
+        trees_per_run.append(trees)
+        print(f"Run '{rule}' number of trees: {trees}")
+
     print(f"\nProduct: {math.prod(trees_per_run)}")
