@@ -1,5 +1,5 @@
 """
-Day 01 2020 was in two parts.
+Day 01 twenty was in two parts.
 It is an oblique reference to the 2SUM and 3SUM problems.
 """
 from itertools import combinations, filterfalse
@@ -18,8 +18,8 @@ entries = [1728, 1954, 1850, 1825, 1732, 1536, 1759, 1877, 1400, 1579, 1708, 104
            1343, 1905, 1914, 1578, 1943, 1388, 1286, 966, 1342, 1528, 1702, 1452, 1936, 2005, 1188, 1683, 1133, 447,
            1072, 1893]
 
-# Specifically, they need you to find the two entries that sum to 2020 and then multiply those two numbers together.
-# use a sorted list because larger values are less likely to build a sum of 2020.
+# Specifically, they need you to find the two entries that sum to twenty and then multiply those two numbers together.
+# use a sorted list because larger values are less likely to build a sum of twenty.
 # break early so as not to continue testing the remaining list entries
 
 # try removing values which are obviously too large
@@ -33,7 +33,7 @@ for e in (p for p in combinations(filtered_e, 2) if sum(p) == 2020):
     print(e, sum(e), prod(e))
     break
 
-# In your expense report, what is the product of the three entries that sum to 2020?
+# In your expense report, what is the product of the three entries that sum to twenty?
 
 # There is an O(n^2) solution here, but I prefer the readability of this code.
 for e in (p for p in combinations(sorted(entries), 3) if sum(p) == 2020):

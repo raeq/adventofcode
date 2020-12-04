@@ -12,20 +12,21 @@ from pydantic import (
 
 @dataclasses.dataclass
 class Passport():
-    byr: int = conint(gt=1920, lt=2002)
-    iyr: int = conint(gt=2010, lt=2020)
-    eyr: str = conint(gt=2020, lt=2030)
-    hgt: str = constr(regex=r'^((1[5-8][0-9]|19[0-3])(cm))|((59|6[0-9]|7[0-6])(in))$')
-    hcl: str = constr(regex=r'^([0-9a-f]*)$')
-    ecl: str = constr(regex=r'^(amb|blu|brn|gry|grn|hzl|oth)$')
-    pid: str = constr(regex=r'^[0-9]{9}]$')
+    raw_record: str = ""
+    byr: conint = conint(gt=1920, lt=2002)
+    iyr: conint = conint(gt=2010, lt=2020)
+    eyr: conint = conint(gt=2020, lt=2030)
+    hgt: constr = constr(regex=r'^((1[5-8][0-9]|19[0-3])(cm))|((59|6[0-9]|7[0-6])(in))$')
+    hcl: constr = constr(regex=r'^([0-9a-f]*)$')
+    ecl: constr = constr(regex=r'^(amb|blu|brn|gry|grn|hzl|oth)$')
+    pid: constr = constr(regex=r'^[0-9]{9}]$')
     cid: str = ""
     simple_validity: bool = False
     complex_validity: bool = False
     errors: list[str] = field(default_factory=list)
 
     def __init__(self, raw_record: str, *args, **kwargs):
-        self.raw_record = raw_record
+        self.raw_record = raw_record.replace('\n', ' ')
         self.errors = []
         regex = "(\S{3}):(\S+)"
 
@@ -36,11 +37,11 @@ class Passport():
         for matchNum, match in enumerate(matches, start=1):
             key = match.groups()[0]
             if key == "byr":
-                self.byr = match.groups()[1]
+                self.byr = int(match.groups()[1])
             elif key == "iyr":
-                self.iyr = match.groups()[1]
+                self.iyr = int(match.groups()[1])
             elif key == "eyr":
-                self.eyr = match.groups()[1]
+                self.eyr = int(match.groups()[1])
             elif key == "hgt":
                 self.hgt = match.groups()[1]
             elif key == "hcl":

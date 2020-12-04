@@ -14,3 +14,4 @@ matplotlib
 scipy
 networkx
 pydantic
+wrapt

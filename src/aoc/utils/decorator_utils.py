@@ -1,9 +1,6 @@
-import wrapt
-
 from time import process_time
 
 
-@wrapt.decorator
 def timing(wrapped, instance, args, kwargs):
     p1 = process_time()
 
