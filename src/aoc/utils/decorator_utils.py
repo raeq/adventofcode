@@ -1,15 +1,16 @@
-from functools import wraps
+import wrapt
 
 from time import process_time
 
 
-def timing(f):
-    @wraps(f)
-    def wrap(*args, **kwargs):
-        p1 = process_time()
-        result = f(*args, **kwargs)
-        p2 = process_time()
-        print(f"func:{f.__name__} with {args} {kwargs} took {p2 - p1} s")
-        return result
+@wrapt.decorator
+def timing(wrapped, instance, args, kwargs):
+    p1 = process_time()
 
-    return wrap
+    def _execute(*_args, **_kwargs):
+        return wrapped(*_args, **_kwargs)
+
+    p2 = process_time()
+    print(f" {args} {kwargs} took {p2 - p1} s")
+
+    return _execute(*args, **kwargs)

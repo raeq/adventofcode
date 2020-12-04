@@ -1,7 +1,9 @@
+import logging
 from collections import namedtuple as nt
 from functools import lru_cache
 
 from aoc.utils.decorator_utils import timing
+from aoc.utils.log import logwith
 
 
 def load_file(file_name: str) -> list:
@@ -10,6 +12,7 @@ def load_file(file_name: str) -> list:
 
 
 @lru_cache()
+@logwith()
 def traverse(right_steps: int, down_steps: int) -> int:
     trees_found: int = 0
     for i in range(0, height, down_steps):
@@ -56,6 +59,8 @@ def main():
 
 
 if __name__ == "__main__":
-    # globals
+    logging.basicConfig()
+    log = logging.getLogger(__name__)
+    log.setLevel(logging.DEBUG)
 
     main()
