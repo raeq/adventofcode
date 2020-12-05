@@ -41,6 +41,10 @@ def load_file(file_name: str) -> typing.List[str]:
 
 
 def calc_seat(boarding_pass: str) -> int:
+    """
+    >>> calc_seat('FBFBBFFRLR')
+    5
+    """
     log.debug(f"calc seat {boarding_pass}")
     seat_raw = boarding_pass[-3:]
     seat_bin = seat_raw.replace("L", "0").replace("R", "1")
@@ -51,6 +55,10 @@ def calc_seat(boarding_pass: str) -> int:
 
 
 def calc_row(boarding_pass: str) -> int:
+    """
+    >>> calc_row('FBFBBFFRLR')
+    44
+    """
     log.debug(f"calc row {boarding_pass}")
     row_raw = boarding_pass[:7]
     row_bin = row_raw.replace("F", "0").replace("B", "1")
@@ -94,6 +102,10 @@ def get_seats() -> list:
 
 
 def find_empty(all_seats: list) -> int:
+    """
+    >>> find_empty([3,4,5,7,8])
+    6
+    """
     maximum_seats: set = {val for val in range(min(all_seats), max(all_seats))}
     diff: int = list(maximum_seats.difference(set(all_seats)))[0]
 
