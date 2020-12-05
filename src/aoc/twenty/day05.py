@@ -82,9 +82,6 @@ def get_seats() -> list:
 
 
 def find_empty(seats: list) -> int:
-    cur = 0
-    previous = 0
-    next = 0
 
     candidate1: int = None
     candidate2: int = None
