@@ -29,20 +29,20 @@ What is the highest seat ID on a boarding pass?
 import logging
 
 
-log = logging.getLogger('custom_log')
+log = logging.getLogger("custom_log")
 log.addHandler(logging.StreamHandler())
 log.setLevel(logging.WARN)
 
 
 def load_file(file_name: str) -> str:
-    with open(file_name, 'r') as fd:
-        return [line.rstrip('\n') for line in fd]
+    with open(file_name, "r") as fd:
+        return [line.rstrip("\n") for line in fd]
 
 
 def calc_seat(boarding_pass: str) -> int:
     log.debug(f"calc seat {boarding_pass}")
     seat_raw = boarding_pass[-3:]
-    seat_bin = seat_raw.replace('L', '0').replace('R', '1')
+    seat_bin = seat_raw.replace("L", "0").replace("R", "1")
     seat_dec: int = int(seat_bin, 2)
 
     log.info(f"Seat: original: {seat_raw} binary {seat_bin} decimal {seat_dec}")
@@ -52,7 +52,7 @@ def calc_seat(boarding_pass: str) -> int:
 def calc_row(boarding_pass: str) -> int:
     log.debug(f"calc row {boarding_pass}")
     row_raw = boarding_pass[:7]
-    row_bin = row_raw.replace('F', '0').replace('B', '1')
+    row_bin = row_raw.replace("F", "0").replace("B", "1")
     row_dec: int = int(row_bin, 2)
 
     log.info(f"Row original: {row_raw} binary {row_bin} decimal {row_dec}")
@@ -71,8 +71,8 @@ def seat_id(boarding_pass: str) -> int:
 
 
 def get_seats() -> int:
-    filename = "day05.txt"
-    fields = load_file(filename)
+    filename: str = "day05.txt"
+    fields: list = load_file(filename)
     seats: list = []
 
     for bp in fields:
@@ -82,9 +82,8 @@ def get_seats() -> int:
 
 
 def find_empty(seats: list) -> int:
-
-    all_set = {val for val in range(min(seats), max(seats))}
-    diff = list(all_set.difference(set(seats)))[0]
+    maximum_seats: set = {val for val in range(min(seats), max(seats))}
+    diff: int = list(maximum_seats.difference(set(seats)))[0]
 
     return diff
 
