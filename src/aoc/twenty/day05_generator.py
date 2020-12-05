@@ -11,8 +11,8 @@ log.setLevel(logging.INFO)
 
 
 def generate_data(startat: int) -> list:
-    lowest = random.choice(range(startat, 30))
-    highest = random.choice(range(650, 850))
+    lowest = random.randrange(startat, 30)
+    highest = random.randrange(650, 850)
     ints: list = [i for i in range(lowest, highest)]
 
     # remove one from somewhere
