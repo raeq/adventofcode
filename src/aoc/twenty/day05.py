@@ -31,7 +31,7 @@ import logging
 
 log = logging.getLogger('custom_log')
 log.addHandler(logging.StreamHandler())
-log.setLevel(logging.INFO)
+log.setLevel(logging.WARN)
 
 
 def load_file(file_name: str) -> str:
@@ -70,7 +70,7 @@ def seat_id(boarding_pass: str) -> int:
     return seatid
 
 
-def get_seats() -> list:
+def get_seats() -> int:
     filename = "day05.txt"
     fields = load_file(filename)
     seats: list = []
@@ -83,23 +83,10 @@ def get_seats() -> list:
 
 def find_empty(seats: list) -> int:
 
-    candidate1: int = None
-    candidate2: int = None
+    all_set = {val for val in range(min(seats), max(seats))}
+    diff = list(all_set.difference(set(seats)))[0]
 
-    for i in range(1, len(seats) - 1, 1):
-        seat_val: int = seats[i]
-        seat_val_prev: int = seats[i - 1]
-        seat_val_next: int = seats[i + 1]
-
-        if seat_val != seat_val_prev + 1:
-            candidate1 = seat_val - 1
-            log.info(f"A This seat {seat_val} is not +1 the previous seat {seat_val_prev} candidate1: {candidate1}")
-
-        if seat_val != seat_val_next - 1:
-            candidate2 = seat_val + 1
-            log.info(f"B This seat {seat_val} is not 1- the next seat {seat_val_next} candidat2: {candidate2}")
-
-            return candidate2
+    return diff
 
 
 if __name__ == "__main__":
@@ -109,7 +96,7 @@ if __name__ == "__main__":
     print(f"Highest found: {max(seats)}")
     print(f"My seat number: {find_empty(sorted(seats))}")
 
-    print("Answer:", seat_id("FBFBBFFRLR"))
-    print("Answer:", seat_id("BFFFBBFRRR"))
-    print("Answer:", seat_id("FFFBBBFRRR"))
-    print("Answer:", seat_id("BBFFBBFRLL"))
+    log.info("Answer:", seat_id("FBFBBFFRLR"))
+    log.info("Answer:", seat_id("BFFFBBFRRR"))
+    log.info("Answer:", seat_id("FFFBBBFRRR"))
+    log.info("Answer:", seat_id("BBFFBBFRLL"))

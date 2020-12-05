@@ -2,28 +2,31 @@ import dataclasses
 import logging
 from dataclasses import field
 from pprint import pprint
+from typing import List, Optional
 
 import regex as re
 from pydantic import (
+    BaseModel,
     conint,
     constr,
 )
 
 
-@dataclasses.dataclass
-class Passport():
+class Passport(BaseModel):
     raw_record: str = ""
-    byr: conint = conint(gt=1920, lt=2002)
-    iyr: conint = conint(gt=2010, lt=2020)
-    eyr: conint = conint(gt=2020, lt=2030)
-    hgt: constr = constr(regex=r'^((1[5-8][0-9]|19[0-3])(cm))|((59|6[0-9]|7[0-6])(in))$')
-    hcl: constr = constr(regex=r'^([0-9a-f]*)$')
-    ecl: constr = constr(regex=r'^(amb|blu|brn|gry|grn|hzl|oth)$')
-    pid: constr = constr(regex=r'^[0-9]{9}]$')
-    cid: str = ""
-    simple_validity: bool = False
-    complex_validity: bool = False
-    errors: list[str] = field(default_factory=list)
+
+    byr: Optional[conint] = conint(gt=1920, lt=2002)
+    iyr: Optional[conint] = conint(gt=2010, lt=2020)
+    eyr: Optional[conint] = conint(gt=2020, lt=2030)
+    hgt: Optional[constr] = constr(regex=r'^((1[5-8][0-9]|19[0-3])(cm))|((59|6[0-9]|7[0-6])(in))$')
+    hcl: Optional[constr] = constr(regex=r'^([0-9a-f]*)$')
+    ecl: Optional[constr] = constr(regex=r'^(amb|blu|brn|gry|grn|hzl|oth)$')
+    pid: Optional[constr] = constr(regex=r'^[0-9]{9}]$')
+    cid: Optional[str] = ""
+
+    simple_validity: Optional[bool] = False
+    complex_validity: Optional[bool] = False
+    errors: Optional[list[str]] = list
 
     def __init__(self, raw_record: str, *args, **kwargs):
         self.raw_record = raw_record.replace('\n', ' ')
