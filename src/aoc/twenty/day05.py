@@ -117,5 +117,5 @@ if __name__ == "__main__":
     seats = get_seats()
 
     print(f"Highest found: {max(seats)}")
-    print(f"My seat number: {find_empty(sorted(seats))}")
+    print(f"My seat number: {find_empty(seats)}")
 
