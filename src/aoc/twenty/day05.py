@@ -119,7 +119,3 @@ if __name__ == "__main__":
     print(f"Highest found: {max(seats)}")
     print(f"My seat number: {find_empty(sorted(seats))}")
 
-    log.warning(f"Answer: {seat_id('FBFBBFFRLR')}")
-    log.warning(f"Answer: {seat_id('BFFFBBFRRR')}")
-    log.warning(f"Answer: {seat_id('FFFBBBFRRR')}")
-    log.warning(f"Answer: {seat_id('BBFFBBFRLL')}")
