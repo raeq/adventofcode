@@ -27,6 +27,7 @@ What is the highest seat ID on a boarding pass?
 """
 
 import logging
+import typing
 
 
 log = logging.getLogger("custom_log")
@@ -34,7 +35,7 @@ log.addHandler(logging.StreamHandler())
 log.setLevel(logging.WARN)
 
 
-def load_file(file_name: str) -> str:
+def load_file(file_name: str) -> typing.List[str]:
     with open(file_name, "r") as fd:
         return [line.rstrip("\n") for line in fd]
 
@@ -60,6 +61,17 @@ def calc_row(boarding_pass: str) -> int:
 
 
 def seat_id(boarding_pass: str) -> int:
+    """
+    >>> seat_id('FBFBBFFRLR')
+    357
+    >>> seat_id('BFFFBBFRRR')
+    567
+    >>> seat_id('FFFBBBFRRR')
+    119
+    >>> seat_id('BBFFBBFRLL')
+    820
+    """
+
     log.debug(f"seat id {boarding_pass}")
     row = calc_row(boarding_pass)
     seat = calc_seat(boarding_pass)
@@ -70,22 +82,22 @@ def seat_id(boarding_pass: str) -> int:
     return seatid
 
 
-def get_seats() -> int:
+def get_seats() -> list:
     filename: str = "day05.txt"
     fields: list = load_file(filename)
-    seats: list = []
+    seat_numbers: list = []
 
     for bp in fields:
-        seats.append(seat_id(bp))
-    log.info(f"There are {len(seats)} lines in the file {filename}")
-    return seats
+        seat_numbers.append(seat_id(bp))
+    log.info(f"There are {len(seat_numbers)} lines in the file {filename}")
+    return seat_numbers
 
 
-def find_empty(seats: list) -> int:
-    maximum_seats: set = {val for val in range(min(seats), max(seats))}
-    diff: int = list(maximum_seats.difference(set(seats)))[0]
+def find_empty(all_seats: list) -> int:
+    maximum_seats: set = {val for val in range(min(all_seats), max(all_seats))}
+    diff: int = list(maximum_seats.difference(set(all_seats)))[0]
 
-    return diff
+    return int(diff)
 
 
 if __name__ == "__main__":
@@ -95,7 +107,7 @@ if __name__ == "__main__":
     print(f"Highest found: {max(seats)}")
     print(f"My seat number: {find_empty(sorted(seats))}")
 
-    log.info("Answer:", seat_id("FBFBBFFRLR"))
-    log.info("Answer:", seat_id("BFFFBBFRRR"))
-    log.info("Answer:", seat_id("FFFBBBFRRR"))
-    log.info("Answer:", seat_id("BBFFBBFRLL"))
+    log.warning(f"Answer: {seat_id('FBFBBFFRLR')}")
+    log.warning(f"Answer: {seat_id('BFFFBBFRRR')}")
+    log.warning(f"Answer: {seat_id('FFFBBBFRRR')}")
+    log.warning(f"Answer: {seat_id('BBFFBBFRLL')}")
