@@ -14,7 +14,7 @@ def generate_data(startat: int) -> list:
     lowest = random.choice(range(startat, 30))
     highest = random.choice(range(650, 850))
     ints: list = [i for i in range(lowest, highest)]
-    popped = ints.pop(random.choice(range(50, 750)))
+    popped = ints.pop(random.choice(range(50, 650)))
     passes: list = []
 
     for i in ints:
