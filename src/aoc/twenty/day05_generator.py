@@ -14,6 +14,8 @@ def generate_data(startat: int) -> list:
     lowest = random.choice(range(startat, 30))
     highest = random.choice(range(650, 850))
     ints: list = [i for i in range(lowest, highest)]
+
+    # remove one from somewhere
     popped = ints.pop(random.choice(range(50, 650)))
     passes: list = []
 
@@ -23,7 +25,6 @@ def generate_data(startat: int) -> list:
         seat_ = raw_bin[-3:].replace('0', 'L').replace('1', 'R')
         passes.append(row_ + seat_)
 
-    # remove one from somewhere
 
     random.shuffle(passes)
 
