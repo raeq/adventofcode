@@ -31,7 +31,7 @@ import logging
 
 log = logging.getLogger('custom_log')
 log.addHandler(logging.StreamHandler())
-log.setLevel(logging.WARN)
+log.setLevel(logging.INFO)
 
 
 def load_file(file_name: str) -> str:
@@ -50,6 +50,7 @@ def calc_seat(boarding_pass: str) -> int:
 
 
 def calc_row(boarding_pass: str) -> int:
+    log.debug(f"calc row {boarding_pass}")
     row_raw = boarding_pass[:7]
     row_bin = row_raw.replace('F', '0').replace('B', '1')
     row_dec: int = int(row_bin, 2)
@@ -59,20 +60,24 @@ def calc_row(boarding_pass: str) -> int:
 
 
 def seat_id(boarding_pass: str) -> int:
+    log.debug(f"seat id {boarding_pass}")
     row = calc_row(boarding_pass)
     seat = calc_seat(boarding_pass)
 
     seatid = row * 8 + seat
 
+    log.info(f"Seat id, row: {row} seat: {seat} id: {seatid}")
     return seatid
 
 
 def get_seats() -> list:
-    fields = load_file("day05.txt")
+    filename = "day05.txt"
+    fields = load_file(filename)
     seats: list = []
 
     for bp in fields:
         seats.append(seat_id(bp))
+    log.info(f"There are {len(seats)} lines in the file {filename}")
     return seats
 
 
@@ -81,19 +86,20 @@ def find_empty(seats: list) -> int:
     previous = 0
     next = 0
 
+    candidate1: int = None
+    candidate2: int = None
+
     for i in range(1, len(seats) - 1, 1):
         seat_val: int = seats[i]
         seat_val_prev: int = seats[i - 1]
         seat_val_next: int = seats[i + 1]
-        candidate1: int = None
-        candidate2: int = None
 
         if seat_val != seat_val_prev + 1:
-            candidate1: int = seat_val - 1
+            candidate1 = seat_val - 1
             log.info(f"A This seat {seat_val} is not +1 the previous seat {seat_val_prev} candidate1: {candidate1}")
 
         if seat_val != seat_val_next - 1:
-            candidate2: int = seat_val + 1
+            candidate2 = seat_val + 1
             log.info(f"B This seat {seat_val} is not 1- the next seat {seat_val_next} candidat2: {candidate2}")
 
             return candidate2
