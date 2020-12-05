@@ -3,17 +3,11 @@ Generate test data sets for the day 5 challenge.
 """
 import logging
 import random
-import typing
 
 
 log = logging.getLogger("aoc")
 log.addHandler(logging.StreamHandler())
 log.setLevel(logging.INFO)
-
-
-def load_file(file_name: str) -> typing.List[str]:
-    with open(file_name, "r") as fd:
-        return [line.rstrip("\n") for line in fd]
 
 
 def generate_data(startat: int) -> list:
