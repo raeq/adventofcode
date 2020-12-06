@@ -1,3 +1,7 @@
+"""
+# Git Ident: '$Id$'
+"""
+
 from dataclasses import dataclass, field
 
 import regex as re
