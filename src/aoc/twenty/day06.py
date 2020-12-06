@@ -66,15 +66,17 @@ def get_data(full_text: str):
 
 def main():
     d = load_file("day06.txt")
+
     total_ans: int = 0
     total_unani: int = 0
+
     g: Group
     for g in get_data(d):
         total_ans += g.answer_count
         total_unani += g.unanimous_count
 
-    print(total_ans)
-    print(total_unani)
+    print(f"Part 1 answer, sum of distinct answers: {total_ans:>5}")
+    print(f"Part 2 answer, sum of unanimous answers: {total_unani:>4}")
 
 
 if __name__ == "__main__":
