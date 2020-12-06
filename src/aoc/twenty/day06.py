@@ -25,10 +25,10 @@ class Group:
         for record in self.raw_data:
             self.persons.append(Person(record))
 
-        self.answer_count = self.group_answer_count()
-        self.unanimous_count = self.group_unanimous_count()
+        self.answer_count = self.group_distinct_answers()
+        self.unanimous_count = self.group_unanimous_answers()
 
-    def group_answer_count(self) -> int:
+    def group_distinct_answers(self) -> int:
         ans = set()
         p: Person
 
@@ -37,7 +37,7 @@ class Group:
 
         return len(ans)
 
-    def group_unanimous_count(self) -> int:
+    def group_unanimous_answers(self) -> int:
 
         ans: list = []
         for p in self.persons:
@@ -54,7 +54,7 @@ def load_file(file_name: str) -> str:
 
 def get_data(full_text: str):
     regex = r"(.*?)\n\n"
-    matches = re.finditer(regex, full_text, re.MULTILINE | re.IGNORECASE | re.DOTALL)
+    matches = re.finditer(regex, full_text, re.IGNORECASE | re.DOTALL)
 
     my_groups: list = []
 
