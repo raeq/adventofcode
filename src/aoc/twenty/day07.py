@@ -1,7 +1,6 @@
 import typing
 from collections import defaultdict
 from functools import lru_cache
-from pprint import pprint
 
 import regex as re
 
@@ -60,7 +59,6 @@ def main():
         parsed = parse_data(d)
         bags.update(parsed)
 
-    pprint(bags)
     print(f"Part one answer: {len(find_all_outer('shiny gold'))}")
     print(f"Part two answer: {find_all_inner('shiny gold')}")
 
