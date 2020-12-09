@@ -18,7 +18,7 @@ def addends_in_previous_25(previous_25: list, target: int) -> bool:
     False
     """
     sums = {sum(c) for c in list(itertools.combinations(
-        [x for x in (_ for _ in previous_25[-25:] if _ < target)], 2))}
+        [_ for _ in previous_25[-25:] if _ < target], 2))}
 
     return target in sums
 
