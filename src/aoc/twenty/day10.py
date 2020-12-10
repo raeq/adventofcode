@@ -35,5 +35,5 @@ data: list
 if __name__ == "__main__":
 
     data = parse_raw("day10.txt")
-    print(f"{part_one(data)}")
-    print(f"{part_two()}")
+    print(f"Part one answer: {part_one(data):>20}")
+    print(f"Part two answer: {part_two():>20}")
