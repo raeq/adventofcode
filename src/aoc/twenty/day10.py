@@ -14,8 +14,7 @@ def parse_raw(file_name: str) -> list:
 
 #using more_itertools, this is fun!
 def part_one(data: []) -> int:
-    diffs = list(difference(data[1:]))
-    c = Counter(diffs)
+    c = Counter(difference(data[1:]))
 
     return c[1] * c[3]
 
