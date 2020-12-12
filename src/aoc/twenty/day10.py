@@ -1,5 +1,7 @@
+from collections import Counter
 from functools import lru_cache
-from more_itertools import bucket, difference
+
+from more_itertools import difference
 
 
 def parse_raw(file_name: str) -> list:
@@ -12,12 +14,9 @@ def parse_raw(file_name: str) -> list:
 
 #using more_itertools, this is fun!
 def part_one(data: []) -> int:
-    diffs = list(difference(data[1:]))
-    buckets = bucket(diffs, key=lambda x: x)
-    count_ones = len(list(buckets[1]))
-    count_threes = len(list(buckets[3]))
+    c = Counter(difference(data[1:]))
 
-    return count_ones * count_threes
+    return c[1] * c[3]
 
 
 @lru_cache(maxsize=2)
