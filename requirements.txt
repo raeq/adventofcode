@@ -18,3 +18,4 @@ wrapt
 regex
 setuptools
 more-itertools
+sympy
