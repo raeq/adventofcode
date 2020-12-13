@@ -24,10 +24,10 @@ def part_one(early, avail):
     return (ans - early) * yy
 
 
-def part_two(nums):
+def part_two(avail):
 
     M, U = [], []
-    for i, j in enumerate(nums.split(",")) :
+    for i, j in enumerate(avail.split(",")) :
         if j == 'x':
             continue
         else:
