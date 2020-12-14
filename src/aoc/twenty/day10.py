@@ -1,7 +1,4 @@
-from collections import Counter
 from functools import lru_cache
-
-from more_itertools import difference
 
 
 def parse_raw(file_name: str) -> list:
@@ -12,27 +9,27 @@ def parse_raw(file_name: str) -> list:
     return sorted(data)
 
 
-#using more_itertools, this is fun!
-def part_one(data: []) -> int:
-    c = Counter(difference(data[1:]))
+from collections import Counter
+from math import prod
+from more_itertools import difference
 
-    return c[1] * c[3]
+
+def part_one(data: list) -> int:
+    return prod(v for k, v in dict(Counter(difference(data[1:]))).items())
 
 
 @lru_cache(maxsize=2)
 def part_two(current: int = 0) -> int:
-
     if current != len(data) - 1:
         return sum(part_two(current + next_val) for
                    next_val in range(1, min(4, len(data) - current))
-                        if data[next_val + current] - data[current] <= 3)
+                   if data[next_val + current] - data[current] <= 3)
     return 1
 
 
 data: list
 
 if __name__ == "__main__":
-
     data = parse_raw("day10.txt")
     print(f"Part one answer: {part_one(data):>20}")
     print(f"Part two answer: {part_two():>20}")

@@ -33,19 +33,24 @@ def execute_program(instructions: list):
         i = instructions[n]
 
         if i.hits < 2:
-
-            if i.opcode == "nop":
-                e = Execution(step=c, register=r, next_i=n + 1, previous_i=n, instruction=i)
-            if i.opcode == "jmp":
-                e = Execution(step=c, register=r, next_i=n + i.operand, previous_i=n, instruction=i)
-            if i.opcode == "acc":
-                r += i.operand
-                e = Execution(step=c, register=r, next_i=n + 1, previous_i=n, instruction=i)
-
-            run_list.append(e)
-            n = e.next_i
-            c += 1
-            print(e)
+            try:
+                if i.opcode == "nop":
+                    e = Execution(step=c, register=r, next_i=n + 1, previous_i=n, instruction=i)
+                elif i.opcode == "jmp":
+                    e = Execution(step=c, register=r, next_i=n + i.operand, previous_i=n,
+                                  instruction=i)
+                elif i.opcode == "acc":
+                    r += i.operand
+                    e = Execution(step=c, register=r, next_i=n + 1, previous_i=n, instruction=i)
+                else:
+                    breakpoint("Unknown condition.")
+            except BaseException as e:
+                exit(e)
+            else:
+                run_list.append(e)
+                n = e.next_i
+                c += 1
+                print(e)
 
         else:
             print("halted")
