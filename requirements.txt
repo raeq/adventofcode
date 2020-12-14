@@ -10,7 +10,6 @@ tox
 tqdm
 rich
 requests
-matplotlib
 scipy
 networkx
 pydantic

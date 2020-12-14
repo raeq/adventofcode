@@ -1,4 +1,4 @@
-import math
+from math import inf
 
 from sympy.ntheory.modular import crt
 
@@ -12,7 +12,7 @@ def part_one(early, avail):
     # Part 1
     early = int(early.strip())
     avail = [int(x) for x in avail.split(",") if x != "x"]
-    ans = math.inf
+    ans = inf
 
     for y in avail:
         x = early
@@ -35,7 +35,7 @@ def part_two(avail):
             M.append(j)
             U.append(j - i)
 
-    return (crt(M, U)[0])
+    return crt(M, U)[0]
 
 
 if __name__ == '__main__':
