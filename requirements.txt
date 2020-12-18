@@ -18,3 +18,4 @@ regex
 setuptools
 more-itertools
 sympy
+sly
