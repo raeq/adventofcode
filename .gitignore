@@ -2,6 +2,7 @@
 scratches/
 logs/
 out/
+*visuals*
 .idea/
 
 
@@ -443,3 +444,4 @@ hs_err_pid*
 .aws-sam/
 
 # Created by .ignore support plugin (hsz.mobi)
+/src/aoc/twenty/visuals/
