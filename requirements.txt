@@ -1,5 +1,4 @@
 anytree
-black
 Click
 matplotlib
 numpy
