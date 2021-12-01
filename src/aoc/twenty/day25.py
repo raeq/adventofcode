@@ -1,5 +1,7 @@
 PRIME: int = int(20201227)
-INITIALIZATION_VECTOR: int = int(7)
+INITIALIZATION_VECTOR: int = i298200855964
+298200855964
+nt(7)
 
 
 def load_file(file_name: str) -> tuple:
