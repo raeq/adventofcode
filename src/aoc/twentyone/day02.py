@@ -13,6 +13,9 @@ def get_data(fn):
 class Submarine:
     @unique
     class Direction(Enum):
+        """
+        An enumeration of the direction specifiers supported by this submarine.
+        """
         forward = 'forward'
         up = 'up'
         down = 'down'
@@ -72,14 +75,29 @@ class Submarine:
 
     @property
     def forward_sum(self) -> int:
+        """
+        The sum of all the distances supplied with the movement 'forward'.
+        :return:
+        :rtype:
+        """
         return sum(self._sequences["forward"])
 
     @property
     def down_sum(self) -> int:
+        """
+        The sum of all the distances supplied with the movement 'down'.
+        :return:
+        :rtype:
+        """
         return sum(self._sequences["down"])
 
     @property
     def up_sum(self) -> int:
+        """
+        The sum of all the distances supplied with the movement 'up'.
+        :return:
+        :rtype:
+        """
         return sum(self._sequences["up"])
 
     def move(self, direction: str, distance: [int, str]):
