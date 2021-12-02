@@ -2,11 +2,11 @@ from collections import defaultdict
 
 
 def get_data(fn):
-    data: list = []
+    file_data: list = []
     with open(fn) as f:
         for line in f:
-            data.append(line.rstrip().split())
-    return data
+            file_data.append(line.rstrip().split())
+    return file_data
 
 
 class Submarine:
@@ -62,33 +62,34 @@ class Submarine:
         self._aim += value
 
     @property
-    def forward_sum(self):
+    def forward_sum(self) -> int:
         return sum(self._sequences["forward"])
 
     @property
-    def down_sum(self):
+    def down_sum(self) -> int:
         return sum(self._sequences["down"])
 
     @property
-    def up_sum(self):
+    def up_sum(self) -> int:
         return sum(self._sequences["up"])
 
     def move(self, direction: str, distance: [int, str]):
         """
         Choose direction "up" or "down" or "forward" and supply a distance.
         """
-        distance = int(distance)
-        self._history.append((direction, distance))
-        self._sequences[direction].append(distance)
-        return getattr(self, direction)(distance)
+        if direction in {'forward', 'up', 'down'} and distance:
+            distance = int(distance)
+            self._history.append((direction, distance))
+            self._sequences[direction].append(distance)
+            return getattr(self, direction)(distance)
 
 
 if __name__ == "__main__":
     data = get_data("day02.txt")
 
     sub = Submarine()
-    for direction, value in data:
-        sub.move(direction, value)
+    for text, number in data:
+        sub.move(text, number)
         print(sub)
 
     print(f'Day 2 Part 1 answer: '
