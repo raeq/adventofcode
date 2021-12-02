@@ -80,7 +80,7 @@ class Submarine:
         :return:
         :rtype:
         """
-        return sum(self._sequences["forward"])
+        return sum(self._sequences[Submarine.Direction.forward.value])
 
     @property
     def down_sum(self) -> int:
@@ -89,7 +89,7 @@ class Submarine:
         :return:
         :rtype:
         """
-        return sum(self._sequences["down"])
+        return sum(self._sequences[Submarine.Direction.down.value])
 
     @property
     def up_sum(self) -> int:
@@ -98,7 +98,7 @@ class Submarine:
         :return:
         :rtype:
         """
-        return sum(self._sequences["up"])
+        return sum(self._sequences[Submarine.Direction.up.value])
 
     def move(self, direction: str, distance: [int, str]):
         """
