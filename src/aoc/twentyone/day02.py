@@ -1,4 +1,5 @@
 from collections import defaultdict
+from enum import Enum, unique, auto
 
 
 def get_data(fn):
@@ -10,11 +11,19 @@ def get_data(fn):
 
 
 class Submarine:
+    @unique
+    class Directions(Enum):
+        forward = auto()
+        up = auto()
+        down = auto()
+
+
     """
     A Submarine class. It can ``move()`` forward, up or down by a given value.
     It saves a history of movement commands received in _history.
     It also saves a dictionary of each command type, and the values received in _sequences.
     """
+    directions: set = set(Directions.__members__.keys())  # class variable
     x: int
     y: int
     z: int
@@ -77,7 +86,7 @@ class Submarine:
         """
         Choose direction "up" or "down" or "forward" and supply a distance.
         """
-        if direction in {'forward', 'up', 'down'} and distance:
+        if direction in Submarine.directions and distance:
             distance = int(distance)
             self._history.append((direction, distance))
             self._sequences[direction].append(distance)
@@ -90,7 +99,6 @@ if __name__ == "__main__":
     sub = Submarine()
     for text, number in data:
         sub.move(text, number)
-        print(sub)
 
     print(f'Day 2 Part 1 answer: '
           f'{sub.forward_sum * (sub.down_sum - sub.up_sum)}')
