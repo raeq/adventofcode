@@ -1,5 +1,5 @@
 from collections import defaultdict
-from enum import Enum, unique, auto
+from enum import Enum, unique
 
 
 def get_data(fn):
@@ -13,9 +13,9 @@ def get_data(fn):
 class Submarine:
     @unique
     class Direction(Enum):
-        forward = auto()
-        up = auto()
-        down = auto()
+        forward = 'forward'
+        up = 'up'
+        down = 'down'
 
 
     """
