@@ -63,15 +63,15 @@ class Submarine:
 
     @property
     def forward_sum(self):
-        return sum(sub._sequences["forward"])
+        return sum(self._sequences["forward"])
 
     @property
     def down_sum(self):
-        return sum(sub._sequences["down"])
+        return sum(self._sequences["down"])
 
     @property
     def up_sum(self):
-        return sum(sub._sequences["up"])
+        return sum(self._sequences["up"])
 
     def move(self, direction: str, distance: [int, str]):
         """
