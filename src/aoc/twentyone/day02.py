@@ -1,12 +1,10 @@
 from collections import defaultdict
 
-
 def get_data(fn):
+    data: list = []
     with open(fn) as f:
-        data = [x.rstrip().split() for x in f]
-        for value in data:
-            value[1] = int(value[1])
-
+        for line in f:
+            data.append(line.rstrip().split())
     return data
 
 
@@ -15,9 +13,13 @@ class Submarine:
     y: int
     z: int
     _aim: int
+    _history: list
+    _sequences: dict
 
     def __init__(self, x: int = 0, y: int = 0, z: int = 0):
         self._aim = 0
+        self._history = []
+        self._sequences = defaultdict(list)
         self.x = x
         self.y = y
         self.z = z
@@ -25,32 +27,33 @@ class Submarine:
     def __repr__(self):
         return f'{self.__class__.__name__}(x = {self.x}, y = {self.y}, z = {self.z})'
 
-    def forward(self, distance: int):
-        self.x += distance
-        self.z += self._aim * distance
+    def forward(self, value: int):
+        self.x += value
+        self.z += self._aim * value
 
-    def up(self, distance: int):
-        self._aim -= distance
+    def up(self, value: int):
+        self._aim -= value
 
-    def down(self, distance: int):
-        self._aim += distance
+    def down(self, value: int):
+        self._aim += value
 
     def move(self, function_name, distance):
+        distance = int(distance)
+        self._history.append((function_name, distance))
+        self._sequences[function_name].append(distance)
         return getattr(self, function_name)(distance)
 
 
 if __name__ == "__main__":
     data = get_data("day02.txt")
 
-    moves: dict = defaultdict(list)
-    for direction, distance in data:
-        moves[direction].append(distance)
-
-    loc: int = sum(moves["forward"]) * (sum(moves["down"]) - sum(moves["up"]))
-    print(f'Day 1 Star 1 answer: {loc}')
-
     sub = Submarine()
-    for direction, distance in data:
-        sub.move(direction, distance)
+    for direction, value in data:
+        sub.move(direction, value)
+        print(sub)
 
+    ans = sum(sub._sequences["forward"]) * (sum(sub._sequences["down"]) - sum(sub._sequences["up"]))
+    print(f'Day 1 Part 1 answer: '
+          f'{ans}'
+          )
     print(f'Day 1 Part 2 answer: {sub.x * sub.z}')
