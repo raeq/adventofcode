@@ -9,7 +9,7 @@ def get_data(fn):
 def part_1(input_data):
     rows, cols = len(input_data), len(input_data[0])
     transposition = list(zip(*input_data))
-    Trues = [True if x * 2 >= rows else False for x in [y.count('1') for y in transposition]]
+    Trues = [x * 2 >= rows for x in [y.count('1') for y in transposition]]
 
     powers_two = [pow(2, x) for x in range(cols - 1, -1, -1)]
     gamma, epsilon = 0, 0
