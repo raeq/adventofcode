@@ -6,18 +6,27 @@ def get_data(fn):
     return data
 
 
-def part_1(input_data):
+def transpose_rows_to_columns(rows) -> list:
+    return list(zip(*rows))
+
+
+def is_col_mostly_one(column, rows) -> bool:
+    return column.count('1') * 2 >= rows
+
+
+def part_1(input_data) -> int:
     rows, cols = len(input_data), len(input_data[0])
-    transposition = list(zip(*input_data))
-    Trues = [x * 2 >= rows for x in [y.count('1') for y in transposition]]
+    transposition = transpose_rows_to_columns(input_data)
 
     powers_two = [pow(2, x) for x in range(cols - 1, -1, -1)]
     gamma, epsilon = 0, 0
-    for idx, value in enumerate(Trues):
-        if value:
-            gamma += powers_two[idx]
-        else:
-            epsilon += powers_two[idx]
+
+    for idx, column in enumerate(transposition):
+        match is_col_mostly_one(column, rows):
+            case True:
+                gamma += powers_two[idx]
+            case _:
+                epsilon += powers_two[idx]
 
     return gamma * epsilon
 
