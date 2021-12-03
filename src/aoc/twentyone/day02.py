@@ -1,20 +1,32 @@
 from collections import defaultdict
+from enum import Enum, unique
 
 
 def get_data(fn):
-    data: list = []
+    file_data: list = []
     with open(fn) as f:
         for line in f:
-            data.append(line.rstrip().split())
-    return data
+            file_data.append(line.rstrip().split())
+    return file_data
 
 
 class Submarine:
+    @unique
+    class Direction(Enum):
+        """
+        An enumeration of the direction specifiers supported by this submarine.
+        """
+        forward = 'forward'
+        up = 'up'
+        down = 'down'
+
+
     """
     A Submarine class. It can ``move()`` forward, up or down by a given value.
     It saves a history of movement commands received in _history.
     It also saves a dictionary of each command type, and the values received in _sequences.
     """
+    Directions: set = set(Direction.__members__.keys())  # class variable
     x: int
     y: int
     z: int
@@ -62,34 +74,49 @@ class Submarine:
         self._aim += value
 
     @property
-    def forward_sum(self):
-        return sum(self._sequences["forward"])
+    def forward_sum(self) -> int:
+        """
+        The sum of all the distances supplied with the movement 'forward'.
+        :return:
+        :rtype:
+        """
+        return sum(self._sequences[Submarine.Direction.forward.value])
 
     @property
-    def down_sum(self):
-        return sum(self._sequences["down"])
+    def down_sum(self) -> int:
+        """
+        The sum of all the distances supplied with the movement 'down'.
+        :return:
+        :rtype:
+        """
+        return sum(self._sequences[Submarine.Direction.down.value])
 
     @property
-    def up_sum(self):
-        return sum(self._sequences["up"])
+    def up_sum(self) -> int:
+        """
+        The sum of all the distances supplied with the movement 'up'.
+        :return:
+        :rtype:
+        """
+        return sum(self._sequences[Submarine.Direction.up.value])
 
     def move(self, direction: str, distance: [int, str]):
         """
         Choose direction "up" or "down" or "forward" and supply a distance.
         """
-        distance = int(distance)
-        self._history.append((direction, distance))
-        self._sequences[direction].append(distance)
-        return getattr(self, direction)(distance)
+        if direction in Submarine.Directions and distance:
+            distance = int(distance)
+            self._history.append((direction, distance))
+            self._sequences[direction].append(distance)
+            return getattr(self, direction)(distance)
 
 
 if __name__ == "__main__":
     data = get_data("day02.txt")
 
     sub = Submarine()
-    for direction, value in data:
-        sub.move(direction, value)
-        print(sub)
+    for text, number in data:
+        sub.move(text, number)
 
     print(f'Day 2 Part 1 answer: '
           f'{sub.forward_sum * (sub.down_sum - sub.up_sum)}')
