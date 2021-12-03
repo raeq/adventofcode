@@ -7,7 +7,7 @@ def get_data(fn):
 
 
 def transpose_rows_to_columns(rows) -> list:
-    return list(zip(*rows))
+    return [list(i) for i in zip(*rows)]
 
 
 def is_col_mostly_one(column, rows) -> bool:
