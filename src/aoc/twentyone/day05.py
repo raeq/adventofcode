@@ -1,6 +1,5 @@
 from collections import defaultdict
 from typing import NamedTuple
-from pprint import pprint as pp
 
 
 class Point(NamedTuple):
@@ -32,6 +31,41 @@ class Segment(NamedTuple):
     def y_distance(self):
         return self.finish.y - self.start.y
 
+    @property
+    def walk_path(self):
+        """
+        Bresenham algorithm
+        Yield integer coordinates on the line from (x0, y0) to (x1, y1).
+        Input coordinates should be integers.
+        The result will contain both the start and the end point.
+        """
+        dx = self.x_distance
+        dy = self.y_distance
+        x0 = self.start.x
+        y0 = self.start.y
+
+        xsign = 1 if dx > 0 else -1
+        ysign = 1 if dy > 0 else -1
+
+        dx = abs(dx)
+        dy = abs(dy)
+
+        if dx > dy:
+            xx, xy, yx, yy = xsign, 0, 0, ysign
+        else:
+            dx, dy = dy, dx
+            xx, xy, yx, yy = 0, ysign, xsign, 0
+
+        d = 2 * dy - dx
+        y = 0
+
+        for x in range(dx + 1):
+            yield Point(x=x0 + x * xx + y * yx, y=y0 + x * xy + y * yy)
+            if d >= 0:
+                y += 1
+                d -= 2 * dx
+            d += 2 * dy
+
 
 def get_data(fn):
     cordinate_pairs: list = []
@@ -51,20 +85,18 @@ def calculate(segment_list: list):
     G1: dict = defaultdict(int)
     G2: dict = defaultdict(int)
     s: Segment
+    p: Point
 
-    for idx, s in enumerate(segments):
-
-        for i in range(1 + max(abs(s.x_distance), abs(s.y_distance))):
-            x = s.start.x + (1 if s.x_distance > 0 else (-1 if s.x_distance < 0 else 0)) * i
-            y = s.start.y + (1 if s.y_distance > 0 else (-1 if s.y_distance < 0 else 0)) * i
+    for s in segments:
+        for p in s.walk_path:
             if s.is_straight:
-                G1[(x, y)] += 1
-            G2[(x, y)] += 1
+                G1[(p.x, p.y)] += 1
+            G2[(p.x, p.y)] += 1
 
     print(len([k for k in G1 if G1[k] > 1]))
     print(len([k for k in G2 if G2[k] > 1]))
 
 
 if __name__ == '__main__':
-    segments: list = get_data("day05.txt")
+    segments: list = get_data(r"day05.txt")
     calculate(segments)
