@@ -38,6 +38,7 @@ class Segment(NamedTuple):
         Yield integer coordinates on the line from (x0, y0) to (x1, y1).
         Input coordinates should be integers.
         The result will contain both the start and the end point.
+        See en.wikipedia.org/wiki/Bresenham's_line_algorithm
         """
         dx = self.x_distance
         dy = self.y_distance
@@ -88,10 +89,13 @@ def calculate(segment_list: list):
     p: Point
 
     for s in segments:
-        for p in s.walk_path:
-            if s.is_straight:
+        if s.is_straight:
+            for p in s.walk_path:
                 G1[(p.x, p.y)] += 1
-            G2[(p.x, p.y)] += 1
+                G2[(p.x, p.y)] += 1
+        else:
+            for p in s.walk_path:
+                G2[(p.x, p.y)] += 1
 
     print(len([k for k in G1 if G1[k] > 1]))
     print(len([k for k in G2 if G2[k] > 1]))
