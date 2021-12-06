@@ -33,7 +33,7 @@ if __name__ == '__main__':
     raw_data = get_data("day06.txt")
 
     answer, c = calculate(data=raw_data, cycles=80)
-    print(f"Day 6 Part 2: {answer}")
+    print(f"Day 6 Part 1: {answer}")
 
     answer, c = calculate(data=raw_data, cycles=256 - 80, counter=c)
     print(f"Day 6 Part 2: {answer}")
