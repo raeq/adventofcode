@@ -39,6 +39,20 @@ if __name__ == '__main__':
     print(f"Day 6 Part 2: {answer}")
 
     # https://en.wikipedia.org/wiki/Leslie_matrix
-    a = [1421, 1401, 1191, 1154, 1034, 950, 905]
-    b = [6703087164, 6206821033, 5617089148, 5217223242, 4726100874, 4368232009, 3989468462]
-    print(sum(a[i] + b[i] * 1j for i in raw_data))
+    import numpy as np
+
+
+    mat = np.array([[0, 1, 0, 0, 0, 0, 0, 0, 0],
+                    [0, 0, 1, 0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 1, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 1, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 1, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0, 1, 0, 0],
+                    [1, 0, 0, 0, 0, 0, 0, 1, 0],
+                    [0, 0, 0, 0, 0, 0, 0, 0, 1],
+                    [1, 0, 0, 0, 0, 0, 0, 0, 0]], dtype=np.int64)
+
+    part1 = np.linalg.matrix_power(mat, 80).sum(axis=0)
+    part2 = np.linalg.matrix_power(mat, 256).sum(axis=0)
+
+    print(sum(part1[i] + part2[i] * 1j for i in raw_data))
