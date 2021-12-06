@@ -37,3 +37,8 @@ if __name__ == '__main__':
 
     answer, c = calculate(data=raw_data, cycles=256 - 80, counter=c)
     print(f"Day 6 Part 2: {answer}")
+
+    # https://en.wikipedia.org/wiki/Leslie_matrix
+    a = [1421, 1401, 1191, 1154, 1034, 950, 905]
+    b = [6703087164, 6206821033, 5617089148, 5217223242, 4726100874, 4368232009, 3989468462]
+    print(sum(a[i] + b[i] * 1j for i in raw_data))
