@@ -1,8 +1,10 @@
+from functools import lru_cache
 from math import floor, ceil
 from statistics import mean, median
 
 
 def sum_c(pop: list[int], centroid: int) -> int:
+    @lru_cache
     def gauss_sum(n: int) -> int:
         return (n * (n + 1)) // 2
 
