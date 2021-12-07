@@ -30,4 +30,4 @@ if __name__ == '__main__':
     fl = sum_c(file_data, floor(m))
     cl = sum_c(file_data, ceil(m))
 
-    print(f"Day 7 Part 1: {fl if fl < cl else cl}")
+    print(f"Day 7 Part 2: {fl if fl < cl else cl}")
