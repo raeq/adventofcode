@@ -1,12 +1,11 @@
 import itertools
+from collections import namedtuple
 from statistics import mean, mode, median, stdev
-from typing import NamedTuple
 
 
 class Matrix():
-    class Location(NamedTuple):
-        x: int
-        y: int
+    fields = ('x', 'y', 'value')
+    Point = namedtuple('Point', fields, defaults=(None,) * len(fields))
 
 
     class Row:
@@ -154,7 +153,7 @@ class Matrix():
         msg = self.short_description + msg
         return msg
 
-    def walk_path(self, start: Location, end: Location):
+    def walk_path(self, start: Point, end: Point):
         """
         Bresenham algorithm
         Yield integer coordinates on the line from (x0, y0) to (x1, y1).
@@ -183,7 +182,10 @@ class Matrix():
         y = 0
 
         for x in range(dx + 1):
-            yield Matrix.Location(x=x0 + x * xx + y * yx, y=y0 + x * xy + y * yy)
+            myx = x0 + x * xx + y * yx
+            myy = y0 + x * xy + y * yy
+
+            yield Matrix.Point(x=myx, y=myy, value=self.cell_value(self.Point(x=myx, y=myy)))
             if d >= 0:
                 y += 1
                 d -= 2 * dx
@@ -207,37 +209,35 @@ class Matrix():
 
                 print(f"cell \33({row_idx},{col_idx}) = {col}", end=" ")
                 print(f"- a:{above_idx} b:{below_idx} l:{left_idx} r:{right_idx}", end=" ")
-                print(f"left = ({row_idx},{left_idx}){self.cell_value(self.Location(x=row_idx, y=left_idx))}  - ",
+                print(f"left = ({row_idx},{left_idx}){self.cell_value(self.Point(x=row_idx, y=left_idx))}  - ",
                       end=" ")
-                print(f"right = ({row_idx},{right_idx}){self.cell_value(self.Location(x=row_idx, y=right_idx))} ",
+                print(f"right = ({row_idx},{right_idx}){self.cell_value(self.Point(x=row_idx, y=right_idx))} ",
                       end=" ")
-                print(f"above = ({above_idx},{col_idx}){self.cell_value(self.Location(x=above_idx, y=col_idx))} ",
+                print(f"above = ({above_idx},{col_idx}){self.cell_value(self.Point(x=above_idx, y=col_idx))} ",
                       end=" ")
-                print(f"below = ({below_idx},{col_idx}),{self.cell_value(self.Location(x=below_idx, y=col_idx))} ")
+                print(f"below = ({below_idx},{col_idx}),{self.cell_value(self.Point(x=below_idx, y=col_idx))} ")
 
             print(end="\n")
 
-    def neighbour_locations(self, loc: Location, distance: int = 1):
+    def neighbours(self, loc: Point, distance: int = 1):
 
         for row in range(-distance, distance + 1):
             for col in range(-distance, distance + 1):
                 if row == 0 and col == 0:  # this is the center, it is not a neighbour
                     continue
                 else:
-                    yield self.Location(x=loc.x + row, y=col + loc.y)
+                    yield self.Point(x=loc.x + row, y=col + loc.y,
+                                     value=self.cell_value(self.Point(x=loc.x, y=loc.y)))
 
-    def neighbour_values(self, loc: Location, distance: int = 1):
-        for neighbour in self.neighbour_locations(loc, distance):
-            yield self.cell_value(neighbour)
-
-    def cell_value(self, loc: Location) -> [int, None]:
-        if (loc.x < 0 or loc.x > self.row_count - 1) or (loc.y < 0 or loc.y > self.col_count - 1):
+    def cell_value(self, loc: Point) -> [int, None]:
+        if (loc.x < 0 or loc.x >= self.row_count) or (loc.y < 0 or loc.y >= self.col_count):
             return None
 
         try:
             return self.data[loc.x][loc.y]
         except IndexError as e:
             print(e, "loc= ", loc)
+            raise IndexError(e)
 
 
 def get_data(fn) -> list:
@@ -249,76 +249,16 @@ def get_data(fn) -> list:
     return raw_data
 
 
-def transpose_rows_to_columns(rows) -> list:
-    return [list(i) for i in zip(*rows)]
-
-
-def describe_matrix(data: list = None):
-    rows = len(data)
-    cols = len(data[0])
-
-    for row in data:
-        print(row)
-    print()
-
-    all_values = list(chain(*data))
-
-    print(f"Matrix has: {rows} rows and {cols} columns "
-          f"sum: {sum(all_values)} "
-          f"min: {min(all_values)} "
-          f"max: {max(all_values)} "
-          f"mean: {statistics.mean(all_values)} "
-          f"median: {statistics.median(all_values)} "
-          f"mode: {statistics.mode(all_values)} "
-          f"stdev: {statistics.stdev(all_values):.2f} ", end="\n\n")
-
-    for row_idx, row in enumerate(data):
-        print(f"Row {row_idx}: "
-              f"sum: {sum(row)} "
-              f"min: {min(row)} "
-              f"max: {max(row)} "
-              f"mean: {statistics.mean(row)} "
-              f"median: {statistics.median(row)} "
-              f"mode: {statistics.mode(row)} "
-              f"stdev: {statistics.stdev(row):.2f} ")
-
-        for col_idx, col in enumerate(row):
-            above_idx = max(0, row_idx - 1)
-            below_idx = min(rows - 1, row_idx + 1)
-
-            left_idx = max(0, col_idx - 1)
-            right_idx = min(cols - 1, col_idx + 1)
-
-            above_left = ""
-            above_right = ""
-
-            below_left = ""
-            below_right = ""
-
-            print(f"cell \33({row_idx},{col_idx}) = {col}", end=" ")
-            print(f"- a:{above_idx} b:{below_idx} l:{left_idx} r:{right_idx}", end=" ")
-            print(f"left = ({row_idx},{left_idx}){data[row_idx][left_idx]}  - ", end=" ")
-            print(f"right = ({row_idx},{right_idx}){data[row_idx][right_idx]} ", end=" ")
-            print(f"above = ({above_idx},{col_idx}){data[above_idx][col_idx]} ", end=" ")
-            print(f"below = ({below_idx},{col_idx}){data[below_idx][col_idx]} ")
-
-        print(end="\n")
-
-
 def part1(data: list = None) -> int:
     minrow = 0
     rows = len(data)
     cols = len(data[0])
 
-    describe_matrix(data)
-
-    for row_idx, row in enumerate(data):
-        for col_idx, col in enumerate(row):
-            above_idx = max(0, row_idx - 1)
-            below_idx = min(rows - 1, row_idx + 1)
-
-            left_idx = max(0, col_idx - 1)
-            right_idx = min(cols - 1, col_idx + 1)
+    m: Matrix = Matrix(data)
+    print(m.long_description)
+    m.display()
+    print(list(m.walk_path(Matrix.Point(x=0, y=0), Matrix.Point(x=2, y=4))))
+    print(list(m.neighbours(m.Point(x=1, y=2))))
 
     return minrow
 
