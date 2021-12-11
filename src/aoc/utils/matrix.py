@@ -9,14 +9,30 @@ class Matrix:
 
 
     class Row:
-        _data_points: list[int]
+        _data_points: list
+        _row_idx: int
 
-        def __init__(self, row: list[int]):
-            self._data_points = row
+        def __init__(self, row: list[int], row_idx: int = 0):
+            self._data_points = []
+            self._row_idx = row_idx
+
+            if row_idx < 0:
+                raise ValueError(f"Can't have negative rows like {row_idx}")
+
+            for col_idx, data in enumerate(row):
+                p: Matrix.Point = Matrix.Point(x=row_idx, y=col_idx, value=data)
+                self._data_points.append(p)
+
+        def __getitem__(self, item):
+            return self._data_points[item]
+
+        @property
+        def row_idx(self) -> int:
+            return self._row_idx
 
         @property
         def data_points(self) -> list[int]:
-            return self._data_points
+            return [p.value for p in self._data_points]
 
         @property
         def unique_data_points(self) -> set[int]:
@@ -52,7 +68,7 @@ class Matrix:
 
         @property
         def short_description(self) -> str:
-            return f"Matrix has: rows and {len(self._data_points)} columns " \
+            return f"Row {self.row_idx} has {len(self._data_points)} columns " \
                    f"sum: {self.sum} " \
                    f"min: {self.min} " \
                    f"max: {self.max} " \
@@ -60,6 +76,12 @@ class Matrix:
                    f"median: {self.median} " \
                    f"mode: {self.mode} " \
                    f"stdev: {self.stdev:.2f} "
+
+        def __repr__(self):
+            return f'{self.__class__.__name__}({self._data_points})'
+
+        def __str__(self):
+            return f','.join([f"({x},{y}={v})" for x, y, v in self._data_points])
 
 
     data: list[list[int]]
@@ -72,8 +94,8 @@ class Matrix:
         self._data_points = list(itertools.chain(*self.data))
 
         self.rows = []
-        for row in matrix:
-            self.rows.append(self.Row(row))
+        for idx, row in enumerate(matrix):
+            self.rows.append(self.Row(row, row_idx=idx))
 
     @property
     def row_count(self) -> int:
@@ -185,7 +207,7 @@ class Matrix:
             myx = x0 + x * xx + y * yx
             myy = y0 + x * xy + y * yy
 
-            yield Matrix.Point(x=myx, y=myy, value=self.cell_value(x=myx, y=myy))
+            yield self.rows[myx][myy]
             if d >= 0:
                 y += 1
                 d -= 2 * dx
@@ -193,27 +215,10 @@ class Matrix:
 
     def display(self):
 
-        for row_idx, row in enumerate(self.data):
-            for col_idx, col in enumerate(row):
-                above_idx = row_idx - 1
-                below_idx = row_idx + 1
+        for row_idx, row in enumerate(self.rows):
+            print(row)
 
-                left_idx = col_idx - 1
-                right_idx = col_idx + 1
-
-                print(f"cell \33({row_idx},{col_idx}) = {col}", end=" ")
-                print(f"- a:{above_idx} b:{below_idx} l:{left_idx} r:{right_idx}", end=" ")
-                print(f"left = ({row_idx},{left_idx}){self.cell_value(x=row_idx, y=left_idx)}  - ",
-                      end=" ")
-                print(f"right = ({row_idx},{right_idx}){self.cell_value(x=row_idx, y=right_idx)} ",
-                      end=" ")
-                print(f"above = ({above_idx},{col_idx}){self.cell_value(x=above_idx, y=col_idx)} ",
-                      end=" ")
-                print(f"below = ({below_idx},{col_idx}),{self.cell_value(x=below_idx, y=col_idx)} ")
-
-            print(end="\n")
-
-    def neighbours(self, loc: Point, include_diagonals: bool, distance: int = 1):
+    def neighbours(self, loc: Point, include_diagonals: bool = False, distance: int = 1):
 
         for row in range(-distance, distance + 1):
             for col in range(-distance, distance + 1):
@@ -229,31 +234,23 @@ class Matrix:
 
                 if tx >= 0 and ty >= 0:  # not out of bounds
                     if tx < self.row_count and ty < self.col_count:  # not out of bounds
-                        yield self.Point(x=tx, y=ty,
-                                         value=self.cell_value(x=tx, y=ty))
+                        yield self.rows[tx][ty]
 
     def cell_value(self, x: int, y: int) -> [int, None]:
         if (x < 0 or x >= self.row_count) or (y < 0 or y >= self.col_count):
             return None
         try:
-            return self.data[x][y]
+            return self.rows[x][y].value
         except IndexError as e:
             print(e, "loc= ", x, y)
             raise IndexError(e)
 
     def all_cells(self):
-        for r in range(self.row_count):
-            for c in range(self.col_count):
+        for r in self.rows:
+            for c in r._data_points:
+                yield c
 
-                v = self.cell_value(r, c)
-                p = Matrix.Point(x=r, y=c, value=v)
-
-                if p.value is None:
-                    continue
-                else:
-                    yield p
-
-    def trenches(self, include_diagonals: bool):
+    def trenches(self, include_diagonals: bool = False):
         """The trenches in the matrix are cells with a value lower than any neighbour"""
 
         for c in self.all_cells():
@@ -263,7 +260,7 @@ class Matrix:
             else:
                 yield c
 
-    def peaks(self, include_diagonals: bool):
+    def peaks(self, include_diagonals: bool = False):
         """The peaks in the matrix are cells with a value higher than any neighbour"""
 
         for c in self.all_cells():
@@ -273,7 +270,7 @@ class Matrix:
             else:
                 yield c
 
-    def plateaus(self, include_diagonals: bool):
+    def plateaus(self, include_diagonals: bool = False):
         """The plateaus in the matrix are cells with a value equal to all neighbours"""
 
         for c in self.all_cells():
@@ -282,3 +279,32 @@ class Matrix:
                     break
             else:
                 yield c
+
+
+if __name__ == '__main__':
+
+    data = """2199943210
+3987894921
+9856789892
+8767896789
+9899965678"""
+
+    raw_data: list[int] = []
+
+    for line in data.split("\n"):
+        raw_data.append([int(x) for x in line.rstrip()])
+
+    m: Matrix = Matrix(matrix=raw_data)
+
+    print(m.short_description)
+    print(m.long_description)
+
+    print(m.display())
+    print("trenches", list(m.trenches(include_diagonals=True)))
+    print("peaks", list(m.peaks(include_diagonals=True)))
+    print("plateaus", list(m.plateaus()))
+    print("path", list(m.walk_path(start=Matrix.Point(x=0, y=0),
+                                   end=Matrix.Point(x=3, y=8))))
+    print("neighbours of 2,4", list(m.neighbours(
+        loc=Matrix.Point(x=2, y=4), include_diagonals=False, distance=1000
+    )))
