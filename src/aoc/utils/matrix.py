@@ -213,7 +213,7 @@ class Matrix:
 
             print(end="\n")
 
-    def neighbours(self, loc: Point, distance: int = 1, include_diagonals: bool = False):
+    def neighbours(self, loc: Point, include_diagonals: bool, distance: int = 1):
 
         for row in range(-distance, distance + 1):
             for col in range(-distance, distance + 1):
@@ -253,31 +253,31 @@ class Matrix:
                 else:
                     yield p
 
-    def trenches(self):
+    def trenches(self, include_diagonals: bool):
         """The trenches in the matrix are cells with a value lower than any neighbour"""
 
         for c in self.all_cells():
-            for n in self.neighbours(c):
+            for n in self.neighbours(c, include_diagonals):
                 if c.value >= n.value:
                     break
             else:
                 yield c
 
-    def peaks(self):
+    def peaks(self, include_diagonals: bool):
         """The peaks in the matrix are cells with a value higher than any neighbour"""
 
         for c in self.all_cells():
-            for n in self.neighbours(c):
+            for n in self.neighbours(c, include_diagonals):
                 if c.value <= n.value:
                     break
             else:
                 yield c
 
-    def plateaus(self):
+    def plateaus(self, include_diagonals: bool):
         """The plateaus in the matrix are cells with a value equal to all neighbours"""
 
         for c in self.all_cells():
-            for n in self.neighbours(c):
+            for n in self.neighbours(c, include_diagonals):
                 if c.value != n.value:
                     break
             else:

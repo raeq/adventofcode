@@ -15,8 +15,13 @@ def part1(data: list = None) -> int:
     risk_level: int = 0
     m: Matrix = Matrix(data)
 
-    for c in m.trenches():
+    for c in m.trenches(include_diagonals=False):
         risk_level += c.value + 1
+
+    nd: set = set(list(m.trenches(include_diagonals=True)))
+    wd: set = set(list(m.trenches(include_diagonals=False)))
+
+    print(f"These ones are trenches only if we ignore diagonals: {wd.difference(nd)}")
 
     return risk_level
 
