@@ -213,12 +213,16 @@ class Matrix:
 
             print(end="\n")
 
-    def neighbours(self, loc: Point, distance: int = 1):
+    def neighbours(self, loc: Point, distance: int = 1, include_diagonals: bool = False):
 
         for row in range(-distance, distance + 1):
             for col in range(-distance, distance + 1):
                 if row == 0 and col == 0:  # this is the center, it is not a neighbour
                     continue
+
+                if not include_diagonals:
+                    if row != 0 and col != 0:
+                        continue
 
                 tx = loc.x + row
                 ty = col + loc.y
