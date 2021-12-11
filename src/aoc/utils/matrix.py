@@ -248,3 +248,33 @@ class Matrix:
                     continue
                 else:
                     yield p
+
+    def trenches(self):
+        """The trenches in the matrix are cells with a value lower than any neighbour"""
+
+        for c in self.all_cells():
+            for n in self.neighbours(c):
+                if c.value >= n.value:
+                    break
+            else:
+                yield c
+
+    def peaks(self):
+        """The peaks in the matrix are cells with a value higher than any neighbour"""
+
+        for c in self.all_cells():
+            for n in self.neighbours(c):
+                if c.value <= n.value:
+                    break
+            else:
+                yield c
+
+    def plateaus(self):
+        """The plateaus in the matrix are cells with a value equal to all neighbours"""
+
+        for c in self.all_cells():
+            for n in self.neighbours(c):
+                if c.value != n.value:
+                    break
+            else:
+                yield c
