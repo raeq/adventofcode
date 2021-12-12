@@ -19,8 +19,8 @@ class Matrix:
             if row_idx < 0:
                 raise ValueError(f"Can't have negative rows like {row_idx}")
 
-            for col_idx, data in enumerate(row):
-                p: Matrix.Point = Matrix.Point(x=row_idx, y=col_idx, value=data)
+            for col_idx, val in enumerate(row):
+                p: Matrix.Point = Matrix.Point(x=row_idx, y=col_idx, value=val)
                 self._data_points.append(p)
 
         def __getitem__(self, item):
@@ -160,7 +160,7 @@ class Matrix:
     @property
     def long_description(self):
 
-        msg = "\n"
+        msg = self.short_description + "\n"
         for idx, row in enumerate(self.rows):
             msg = msg + f"Row: {idx}, " \
                         f"sum: {row.sum}, " \
@@ -172,7 +172,6 @@ class Matrix:
                         f"stdev: {row.stdev:.2f}, " \
                         f"unique value count: {len(row.unique_data_points)}\n"
 
-        msg = self.short_description + msg
         return msg
 
     def walk_path(self, start: Point, end: Point):
@@ -220,6 +219,7 @@ class Matrix:
 
     def neighbours(self, loc: Point, include_diagonals: bool = False, distance: int = 1):
 
+        distance = max(min(distance, self.row_count), min(distance, self.col_count))
         for row in range(-distance, distance + 1):
             for col in range(-distance, distance + 1):
                 if row == 0 and col == 0:  # this is the center, it is not a neighbour
@@ -289,7 +289,7 @@ if __name__ == '__main__':
 8767896789
 9899965678"""
 
-    raw_data: list[int] = []
+    raw_data: list[list[int]] = []
 
     for line in data.split("\n"):
         raw_data.append([int(x) for x in line.rstrip()])
@@ -299,12 +299,12 @@ if __name__ == '__main__':
     print(m.short_description)
     print(m.long_description)
 
-    print(m.display())
+    m.display()
     print("trenches", list(m.trenches(include_diagonals=True)))
     print("peaks", list(m.peaks(include_diagonals=True)))
     print("plateaus", list(m.plateaus()))
     print("path", list(m.walk_path(start=Matrix.Point(x=0, y=0),
                                    end=Matrix.Point(x=3, y=8))))
     print("neighbours of 2,4", list(m.neighbours(
-        loc=Matrix.Point(x=2, y=4), include_diagonals=False, distance=1000
+        loc=Matrix.Point(x=2, y=4), include_diagonals=False, distance=234543524352
     )))
