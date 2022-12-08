@@ -1,4 +1,5 @@
 from itertools import chain
+
 from more_itertools import chunked
 
 
@@ -56,7 +57,7 @@ def main():
 
 
 if __name__ == "__main__":
-    numbers, boards = get_data("day04.txt")
+    numbers, boards = get_data("day04.txt.txt")
     boards_dict: dict = {}
 
     main()
