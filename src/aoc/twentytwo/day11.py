@@ -1,7 +1,7 @@
 import collections
 import operator
 from collections import deque
-from math import lcm
+from math import lcm, prod
 
 import regex as re
 
@@ -81,26 +81,24 @@ class Monkey:
 
     def inspect(self, an_lcm: int = None):
 
-        try:
-            while i := self.items.popleft():
-                self.count += 1
+        for _ in range(len(self.items)):
+            i = self.items.popleft()
+            self.count += 1
 
-                i.worry_level = self.parser.operation(i.worry_level, self.parser.right_operand)
-                if an_lcm:
-                    i.worry_level = i.worry_level % an_lcm
-                else:
-                    i.worry_level = i.worry_level // 3
+            i.worry_level = self.parser.operation(i.worry_level, self.parser.right_operand)
+            if an_lcm:
+                i.worry_level = i.worry_level % an_lcm
+            else:
+                i.worry_level = i.worry_level // 3
 
-                target: int = None
-                if i.worry_level % self.parser.modulo_test:
-                    target = self.parser.false_target
-                else:
-                    target = self.parser.true_target
+            target: int = None
+            if i.worry_level % self.parser.modulo_test:
+                target = self.parser.false_target
+            else:
+                target = self.parser.true_target
 
-                yield target, i
+            yield target, i
 
-        except IndexError:
-            ...
 
 
 class MonkeyHouse(collections.UserList):
@@ -110,6 +108,7 @@ class MonkeyHouse(collections.UserList):
                 item for item in _iterable if isinstance(item, Monkey))
         else:
             super().__init__()
+        self._lcm: int = None
 
     def insert(self, index, item):
         if isinstance(item, Monkey):
@@ -144,7 +143,9 @@ class MonkeyHouse(collections.UserList):
 
     @property
     def lowest_common_multiple(self) -> int:
-        return lcm(*[x.parser.modulo_test for x in self.data])
+        if not self._lcm:
+            self._lcm = lcm(*[x.parser.modulo_test for x in self.data])
+        return self._lcm
 
     def rounds_fast(self, iterations: int = 0):
         m: Monkey
@@ -155,8 +156,8 @@ class MonkeyHouse(collections.UserList):
 
     @property
     def top_two_mul(self) -> int:
-        s = sorted(self.data, key=lambda x: x.count, reverse=True)[:2]
-        return s[0].count * s[1].count
+        s = [m.count for m in sorted(self.data, key=lambda x: x.count, reverse=True)[:2]]
+        return prod(s)
 
 
 def get_data(fn: str):
