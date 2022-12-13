@@ -1,18 +1,18 @@
+import collections
 import operator
 from collections import deque
+from math import lcm
 
 import regex as re
 
 
 class PackItem:
+    __slots__ = "worry_level"
+
     worry_level: int
 
     def __init__(self, worry_level: int):
-        self.holders = []
         self.worry_level = int(worry_level)
-
-    def __repr__(self):
-        return f"{self.__class__.__name__}({self.worry_level=}, {self.holders=})"
 
 
 class Monkey:
@@ -22,7 +22,6 @@ class Monkey:
     count: int
 
     class Parse:
-        lines: list = None
         id: int = None
         items: deque = None
         right_operand: int = None
@@ -32,54 +31,47 @@ class Monkey:
         false_target: int = None
 
         def __init__(self, raw_monkey_data2: str):
-            self.lines = []
+            lines = []
             self.items = deque()
 
             for line in raw_monkey_data2.rstrip().split("\n"):
-                self.lines.append(line.strip())
+                lines.append(line.strip())
 
-            line = self.lines[0]
+            line = lines[0]
             matches = re.findall(r"[\d]+", line, re.IGNORECASE | re.DOTALL)
             if len(matches):
                 self.id = int(matches[0])
 
-            line = self.lines[1]
+            line = lines[1]
             matches = re.findall(r"[\d]+", line, re.IGNORECASE | re.DOTALL)
-            for m in matches:
-                self.items.append(PackItem(m))
+            for worry_level in matches:
+                self.items.append(PackItem(worry_level))
 
-            line: str = self.lines[2]
+            line: str = lines[2]
             if "old * old" in line:
                 self.right_operand = 2
                 self.operation = operator.ipow
-            elif " + " in line:
+            else:
                 self.right_operand = int(line.split()[-1])
-                self.operation = operator.add
-            elif " * " in line:
-                self.right_operand = int(line.split()[-1])
-                self.operation = operator.mul
+                if " + " in line:
+                    self.operation = operator.add
+                elif " * " in line:
+                    self.operation = operator.mul
 
-            line = self.lines[3]
+            line = lines[3]
             matches = re.findall(r"[\d]+", line, re.IGNORECASE | re.DOTALL)
             if len(matches):
                 self.modulo_test = int(matches[0])
 
-            line = self.lines[4]
+            line = lines[4]
             matches = re.findall(r"[\d]+", line, re.IGNORECASE | re.DOTALL)
             if len(matches):
                 self.true_target = int(matches[0])
 
-            line = self.lines[5]
+            line = lines[5]
             matches = re.findall(r"[\d]+", line, re.IGNORECASE | re.DOTALL)
             if len(matches):
                 self.false_target = int(matches[0])
-
-        def __str__(self):
-            return f"{self.__class__.__name__}({self.id=}, {self.modulo_test=}, {self.true_target=}," \
-                   f" {self.right_operand=}, {self.operation=}, {self.false_target=}, {self.items=})"
-
-        def __repr__(self):
-            return str(self)
 
     def __init__(self, raw_monkey_data1: str):
         self.parser: Monkey.Parse = Monkey.Parse(raw_monkey_data1)
@@ -87,70 +79,107 @@ class Monkey:
         self.items = self.parser.items
         self.count = 0
 
-    def do_round(self, divthree: bool = True):
+    def inspect(self, an_lcm: int = None):
+
         try:
             while i := self.items.popleft():
                 self.count += 1
 
-                if divthree:
-                    i.worry_level = self.parser.operation(i.worry_level, self.parser.right_operand)
+                i.worry_level = self.parser.operation(i.worry_level, self.parser.right_operand)
+                if an_lcm:
+                    i.worry_level = i.worry_level % an_lcm
+                else:
                     i.worry_level = i.worry_level // 3
 
+                target: int = None
+                if i.worry_level % self.parser.modulo_test:
+                    target = self.parser.false_target
                 else:
-                    # if we multiply naively we get: 79*17=1343 . Then 1343 modulo 13 is equal 4 .
-                    # Note that if we take 79 modulo 13 (that is 1) and multiply it by 17 , we get 17 .
-                    # Then taking 17 modulo 13 gives us the same value as before — that is 4 !
-                    # We get the same result while dealing with smaller numbers, which is crucial for this task.
+                    target = self.parser.true_target
 
-                    if self.parser.operation in (operator.add, operator.ipow):
-                        i.worry_level = self.parser.operation(i.worry_level, self.parser.right_operand)
+                yield target, i
 
-                    else:
-                        a = i.worry_level % self.parser.modulo_test
-                        i.worry_level = self.parser.operation(a, self.parser.right_operand)
-
-                if i.worry_level % self.parser.modulo_test == 0:
-                    monkeys[self.parser.true_target].items.append(i)
-                else:
-                    monkeys[self.parser.false_target].items.append(i)
         except IndexError:
             ...
 
-    def __str__(self):
-        return f"{self.__class__.__name__}({self.id}, {self.count=}, {self.parser})"
 
-    def __repr__(self):
-        return str(self)
+class MonkeyHouse(collections.UserList):
+    def __init__(self, _iterable=None):
+        if _iterable:
+            super().__init__(
+                item for item in _iterable if isinstance(item, Monkey))
+        else:
+            super().__init__()
+
+    def insert(self, index, item):
+        if isinstance(item, Monkey):
+            super().insert(index, item)
+        else:
+            raise TypeError('Item must be a Monkey.')
+
+    def __setitem__(self, index, item):
+        if isinstance(item, Monkey):
+            super().__setitem__(index, item)
+        else:
+            raise TypeError('Item must be a Monkey.')
+
+    def append(self, item):
+        if isinstance(item, Monkey):
+            super().append(item)
+        else:
+            raise TypeError('Item must be a Monkey.')
+
+    def extend(self, other):
+        if isinstance(other, Monkey):
+            super().extend(other)
+        elif isinstance(other, MonkeyHouse):
+            super().extend(item for item in other)
+
+    def rounds(self, iterations: int = 0):
+        m: Monkey
+        for _ in range(iterations):
+            for m in self.data:
+                for target, item in m.inspect():
+                    self.data[target].items.append(item)
+
+    @property
+    def lowest_common_multiple(self) -> int:
+        return lcm(*[x.parser.modulo_test for x in self.data])
+
+    def rounds_fast(self, iterations: int = 0):
+        m: Monkey
+        for _ in range(iterations):
+            for m in self.data:
+                for target, item in m.inspect(an_lcm=self.lowest_common_multiple):
+                    self.data[target].items.append(item)
+
+    @property
+    def top_two_mul(self) -> int:
+        s = sorted(self.data, key=lambda x: x.count, reverse=True)[:2]
+        return s[0].count * s[1].count
 
 
-monkeys: list = []
+def get_data(fn: str):
+    mh = MonkeyHouse()
 
-
-def get_data():
-    monkeys: list = []
-
-    with open("day11_test.txt", 'r') as f:
+    with open(fn, 'r') as f:
         raw_data = f.read().rstrip().split("\n\n")
 
     for idx, m in enumerate(raw_data):
-        monkeys.append(Monkey(m))
+        mh.append(Monkey(m))
 
-    return monkeys
+    return mh
 
 
-monkeys = get_data()
-m: Monkey
-for _ in range(20):
-    for m in monkeys:
-        m.do_round()
+def main(fn: str):
+    monkey_house: MonkeyHouse = get_data(fn)
+    monkey_house.rounds(20)
+    print(f"Day 11 part 1: {monkey_house.top_two_mul}")
 
-s = sorted(monkeys, key=lambda x: x.count, reverse=True)[:2]
-print(s[0].count * s[1].count)
+    monkey_house: MonkeyHouse = get_data(fn)
+    monkey_house.rounds_fast(10_000)
+    print(f"Day 11 part 2: {monkey_house.top_two_mul}")
 
-monkeys = get_data()
-for _ in range(10000):
-    for m in monkeys:
-        m.do_round(divthree=False)
 
-s = sorted(monkeys, key=lambda x: x.count, reverse=True)[:2]
-print(s[0].count * s[1].count)
+if __name__ == "__main__":
+    main("day11.txt")
