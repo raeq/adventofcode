@@ -5,7 +5,7 @@ numpy
 pytest
 pytest-cov
 pytest-xdist
-tox
+tox==4.0.9
 tqdm
 rich
 requests
@@ -14,7 +14,9 @@ networkx
 pydantic
 wrapt
 regex
-setuptools
+setuptools==65.6.3
 more-itertools
 sympy
 sly
+
+pandas
