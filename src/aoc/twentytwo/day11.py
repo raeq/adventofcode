@@ -81,7 +81,7 @@ class Monkey:
 
     def inspect(self, an_lcm: int = None):
 
-        for _ in range(len(self.items)):
+        while self.items:
             i = self.items.popleft()
             self.count += 1
 
