@@ -1,24 +1,33 @@
-import regex as re
-from more_itertools import chunked
+import re
+from functools import reduce
 
-from aoc.utils.matrix import Matrix, Point
-
-EMPTY = 0
-SENSOR = 1
-BEACON = 2
+import numpy as np
+from shapely import LineString, Polygon, union_all, difference
 
 
-def get_int_pairs(input: str) -> tuple[Point, Point]:
-    matches = re.findall(r"[\d]+", input, re.IGNORECASE | re.DOTALL)
-    for val0, val1, val2, val3 in chunked(matches, 4):
-        return Point(int(val0), int(val1), SENSOR), \
-               Point(int(val2), int(val3), BEACON)
+def extract_ints(raw: str):
+    return map(int, re.findall(r'(-?\d+)', raw))
 
 
-m: Matrix = Matrix([])
+DATA = np.fromiter(extract_ints(open("day15.txt").read()), int).reshape(-1, 2, 2)
+SENSORS = DATA[:, 0]
+DISTANCES = np.linalg.norm(SENSORS - DATA[:, 1], ord=1, axis=1).astype(int)
 
-with open("day15.txt") as f:
-    for line in f.readlines():
-        x, y = get_int_pairs(line)
-        print(f'{x=}, {y=}')
-        print(m.manhattan_distance(x, y), end='\n\n')
+
+def part_one():
+    xs, ys = SENSORS.T
+    widths = DISTANCES - abs(ys - 2_000_000)
+    mask = widths > 0
+    intervals = [LineString(((x - width, 0), (x + width, 0))) for x, width in zip(xs[mask], widths[mask])]
+    return int(union_all(intervals).length)
+
+
+def part_two():
+    MAX = 4_000_000
+    diamonds = (Polygon(((x + r, y), (x, y + r), (x - r, y), (x, y - r))) for (x, y), r in zip(SENSORS, DISTANCES))
+    beacon = reduce(difference, diamonds, Polygon(((0, 0), (0, MAX), (MAX, MAX), (MAX, 0)))).centroid
+    return int(beacon.x * MAX + beacon.y)
+
+
+print(f'Day 15 part 1: {part_one()}')
+print(f'Day 15 part 2: {part_two()}')

@@ -14,9 +14,10 @@ networkx
 pydantic
 wrapt
 regex
-setuptools==65.6.3
+setuptools
 more-itertools
 sympy
 sly
 
 pandas
+shapely
