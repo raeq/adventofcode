@@ -1,11 +1,20 @@
 import itertools
-from collections import namedtuple
 from statistics import mean, mode, median, stdev
 
+class Point:
+    x: int
+    y: int
+    value: int
+
+    def __init__(self, x, y, value):
+        self.x = x
+        self.y = y
+        self.value = value
+
+    def __repr__(self):
+        return f'{self.__class__.__name__}(x={self.x}, y={self.y}, value={self.value})'
 
 class Matrix:
-    fields = ('x', 'y', 'value')
-    Point = namedtuple('Point', fields, defaults=(None,) * len(fields))
 
 
     class Row:
@@ -20,7 +29,7 @@ class Matrix:
                 raise ValueError(f"Can't have negative rows like {row_idx}")
 
             for col_idx, val in enumerate(row):
-                p: Matrix.Point = Matrix.Point(x=row_idx, y=col_idx, value=val)
+                p: Point = Point(x=row_idx, y=col_idx, value=val)
                 self._data_points.append(p)
 
         def __getitem__(self, item):
@@ -80,8 +89,6 @@ class Matrix:
         def __repr__(self):
             return f'{self.__class__.__name__}({self._data_points})'
 
-        def __str__(self):
-            return f','.join([f"({x},{y}={v})" for x, y, v in self._data_points])
 
 
     data: list[list[int]]
@@ -174,7 +181,20 @@ class Matrix:
 
         return msg
 
-    def walk_path(self, start: Point, end: Point):
+    @staticmethod
+    def manhattan_distance(start: Point, end: Point) -> int:
+        """
+        distance = |x2 - x1| + |y2 - y1|
+        See: https://en.wikipedia.org/wiki/Taxicab_geometry
+
+        :param start: The x, y starting Point
+        :param end: The x, y destination as a Point
+        :return: The distance according to the cityblock or Manhattan algorithm
+        """
+
+        return abs(end.x - start.x) + abs(end.y - start.y)
+
+    def walk_path(self, start: Point, end: Point) -> Point:
         """
         Bresenham algorithm
         Yield integer coordinates on the line from (x0, y0) to (x1, y1).
@@ -216,6 +236,10 @@ class Matrix:
 
         for row_idx, row in enumerate(self.rows):
             print(row)
+
+    def value_matrix(self):
+        """Returns the values of this matrix as a sequence of arrays
+        """
 
     def neighbours(self, loc: Point, include_diagonals: bool = False, distance: int = 1):
 
